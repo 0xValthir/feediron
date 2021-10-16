@@ -5,7 +5,7 @@ class fi_mod_tags
   public function perform_filter($content, $config, $settings )
   {
     foreach ( $config as $key=>$mod ) {
-      Feediron_Logger::get()->log_object(Feediron_Logger::LOG_TTRSS, "Config value: ", $mod);
+      Feediron_Logger::get()->log_object(Feediron_Logger::LOG_TTRSS, "Config line: ", $key);
 
       switch ( $key ) {
         case 'xpath': $tags = ( new fi_mod_xpath() )->perform_filter( $content, $mod, $settings ); break;
@@ -27,7 +27,7 @@ class fi_mod_tags
       {
         $split_tags = array_merge($split_tags, explode( $config['split'], $tag ) );
       }
-      $tags =	$split_tags;
+      $tags = $split_tags;
     }
 
     // Loop through tags indivdually

@@ -14,6 +14,10 @@ class fi_mod_xpath
     Feediron_Logger::get()->log(Feediron_Logger::LOG_TTRSS, "Perfoming xpath", $xpath);
     $entries = $xpathdom->query($xpath);   // find main DIV according to config
 
+    if (is_null($entries)) { 
+      Feediron_Logger::get()->log(Feediron_Logger::LOG_TTRSS, "Query returned no results");
+    }
+
     foreach ($entries as $entry) {
       Feediron_Logger::get()->log(Feediron_Logger::LOG_TTRSS, "Extracted node", $entry->nodeValue);
 
