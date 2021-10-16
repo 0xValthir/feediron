@@ -45,8 +45,6 @@ Clone the repo into your `plugins.local` directory. You can find more instructio
         - modifiers
             - search - required, can be regex, xpath, or string literal
             - replace - optional, default will be empty, which will be assumed to mean remove matched content
-    - readability
-        - TBD
     - add-tag
         - add tag(s)
         - values can be a string/ literal to add, or xpath/regex to search upon
@@ -59,3 +57,10 @@ Clone the repo into your `plugins.local` directory. You can find more instructio
             - all - optional, default false, will remove all tags currently assigned to article
     - modify-tag
         - modify tag(s) according to a string literal or regex input
+- Useful Links For Dev
+    - Dojo: <https://dojotoolkit.org/documentation/>
+    - xpath
+        - <https://www.w3schools.com/xml/xpath_syntax.asp>
+        - <https://www.tutorialspoint.com/xpath/xpath_quick_guide.htm>
+        - <https://en.wikipedia.org/wiki/XPath>
+
