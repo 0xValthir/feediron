@@ -3,110 +3,44 @@
 class fi_mod_xpath
 {
 
-  public function perform_filter( $html, $config, $settings )
+  public function perform_filter( $content, $xpath, $settings )
   {
-    $debug = array_key_exists('debug', $config) ?: false;
+    $html = $content['content'];
+    $debug = false;
     $doc = Feediron_Helper::getDOM( $html, $settings['charset'], $debug );
     $xpathdom = new DOMXPath($doc);
-
-    $xpaths = Feediron_Helper::check_array( $config['xpath'] );
-
     $htmlout = array();
 
-    foreach($xpaths as $key=>$xpath){
-      Feediron_Logger::get()->log(Feediron_Logger::LOG_VERBOSE, "Perfoming xpath", $xpath);
-      $index = 0;
-      if(is_array($xpath) && array_key_exists('index', $xpath)){
-        $index = $xpath['index'];
-        $xpath = $xpath['xpath'];
-      }
-      $entries = $xpathdom->query('(//'.$xpath.')');   // find main DIV according to config
+    Feediron_Logger::get()->log(Feediron_Logger::LOG_TTRSS, "Perfoming xpath", $xpath);
+    $entries = $xpathdom->query($xpath);   // find main DIV according to config
 
-      $basenode = false;
-
-      if ($entries->length > 0) {
-        $basenode = $entries->item($index);
-      }
-
-      if (!$basenode && count($xpaths) == 1) {
-        Feediron_Logger::get()->log(Feediron_Logger::LOG_VERBOSE, "Removed all content, reverting");
-        return $html;
-      } elseif (!$basenode && count($xpaths) >= 1){
-        Feediron_Logger::get()->log(Feediron_Logger::LOG_VERBOSE, "No node extracted, continuing");
-        continue;
-      }
-
-      Feediron_Logger::get()->log_html(Feediron_Logger::LOG_VERBOSE, "Extracted node", $this->getHtmlNode($basenode));
-      // remove nodes from cleanup configuration
-      $basenode = $this->cleanupNode($xpathdom, $basenode, $config);
+    foreach ($entries as $entry) {
+      Feediron_Logger::get()->log(Feediron_Logger::LOG_TTRSS, "Extracted node", $entry->nodeValue);
 
       //render nested nodes to html
-      $inner_html = $this->getInnerHtml($basenode);
+      $inner_html = $this->getInnerHtml($entry);
       if (!$inner_html){
-        //if there's no nested nodes, render the node itself
-        $inner_html = $basenode->ownerDocument->saveXML($basenode);
+        //if there's no nested entrys, render the entry itself
+        $inner_html = $entry->ownerDocument->saveXML($entry);
       }
+
+      Feediron_Logger::get()->log_html(Feediron_Logger::LOG_TEST, "Node content: ", $inner_html);
       array_push($htmlout, $inner_html);
     }
 
-    $content = join((array_key_exists('join_element', $config)?$config['join_element']:''), $htmlout);
+    return $htmlout;
+
+/*    $html_content = join((array_key_exists('join_element', $config)?$config['join_element']:''), $htmlout);
     if(array_key_exists('start_element', $config)){
       Feediron_Logger::get()->log_html(Feediron_Logger::LOG_VERBOSE, "Adding start element", $config['start_element']);
-      $content = $config['start_element'].$content;
+      $html_content = $config['start_element'].$html_content;
     }
 
     if(array_key_exists('end_element', $config)){
       Feediron_Logger::get()->log_html(Feediron_Logger::LOG_VERBOSE, "Adding end element", $config['end_element']);
-      $content = $content.$config['end_element'];
-    }
+      $html_content = $html_content.$config['end_element'];
+    }*/
 
-    return $content;
-  }
-
-  private function getHtmlNode( $node ){
-    if (is_object($node)){
-      $newdoc = new DOMDocument();
-      if ($node->nodeType == XML_ATTRIBUTE_NODE) {
-        // appendChild will fail, so make it a text node
-        $imported = $newdoc->createTextNode($node->value);
-      } else {
-        $cloned = $node->cloneNode(TRUE);
-        $imported = $newdoc->importNode($cloned,TRUE);
-      }
-      $newdoc->appendChild($imported);
-      return $newdoc->saveHTML();
-    } else {
-      return $node;
-    }
-  }
-
-  private function cleanupNode( $xpath, $basenode, $config )
-  {
-    if(($cconfig = Feediron_Helper::getCleanupConfig($config))!== FALSE)
-    {
-      foreach ($cconfig as $cleanup)
-      {
-        Feediron_Logger::get()->log(Feediron_Logger::LOG_VERBOSE, "cleanup", $cleanup);
-        if(strpos($cleanup, "./") !== 0)
-        {
-          $cleanup = '//'.$cleanup;
-        }
-        $nodelist = $xpath->query($cleanup, $basenode);
-        foreach ($nodelist as $node)
-        {
-          if ($node instanceof DOMAttr)
-          {
-            $node->ownerElement->removeAttributeNode($node);
-          }
-          else
-          {
-            $node->parentNode->removeChild($node);
-          }
-        }
-        Feediron_Logger::get()->log_html(Feediron_Logger::LOG_VERBOSE, "Node after cleanup", $this->getHtmlNode($basenode));
-      }
-    }
-    return $basenode;
   }
 
   private function getInnerHtml( $node ) {
@@ -121,3 +55,4 @@ class fi_mod_xpath
   }
 
 }
+

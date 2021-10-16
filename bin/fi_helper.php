@@ -1,7 +1,7 @@
 <?php
+
 class Feediron_Helper
 {
-
   public static function getCleanupConfig( $config )
   {
     $cconfig = false;
@@ -76,4 +76,15 @@ class Feediron_Helper
     return $doc;
   }
 
+  // reformat an url with a given config
+  public static function reformatUrl($url, $config)
+  {
+    $link = trim($url);
+    if($this->array_check($config, 'reformat'))
+    {
+      $link = reformat($link, $config['reformat']);
+      Feediron_Logger::get()->log(Feediron_Logger::LOG_TTRSS, "Reformated url: ".$link);
+    }
+    return $link;
+  }
 }
