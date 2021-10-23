@@ -10,10 +10,12 @@ class fi_mod_tags
 
       switch ( $key ) {
         case 'xpath': $tags = ( new fi_mod_xpath() )->perform_filter( $content, $mod, $settings ); break;
-        #case 'replace-tags': 
+        #case 'replace-tags':
         default: Feediron_Logger::get()->log(Feediron_Logger::LOG_TTRSS, "Unrecognized option: ".$key);
       }
     }
+
+    Feediron_Logger::get()->log_object(Feediron_Logger::LOG_VERBOSE, "Found Tags: ", $tags);
 
     if(!$tags){
       Feediron_Logger::get()->log(Feediron_Logger::LOG_TTRSS, "No tags saved");
@@ -34,6 +36,7 @@ class fi_mod_tags
     // Loop through tags indivdually
     foreach( $tags as $key=>$tag )
     {
+      Feediron_Logger::get()->log(Feediron_Logger::LOG_VERBOSE, "Processing Tag: ", $tags[$key]);
       // If set perform modify
       if($this->array_check($config, 'modify'))
       {
