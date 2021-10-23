@@ -11,15 +11,15 @@ class fi_mod_xpath
     $xpathdom = new DOMXPath($doc);
     $htmlout = array();
 
-    Feediron_Logger::get()->log(Feediron_Logger::LOG_TTRSS, "Perfoming xpath", $xpath);
+    Feediron_Logger::get()->log(Feediron_Logger::LOG_TEST, "Perfoming xpath", $xpath);
     $entries = $xpathdom->query($xpath);   // find main DIV according to config
 
     if (is_null($entries)) { 
-      Feediron_Logger::get()->log(Feediron_Logger::LOG_TTRSS, "Query returned no results");
+      Feediron_Logger::get()->log(Feediron_Logger::LOG_TTRSS, "Query returned no results", is_null($entries));
     }
 
     foreach ($entries as $entry) {
-      Feediron_Logger::get()->log(Feediron_Logger::LOG_TTRSS, "Extracted node", $entry->nodeValue);
+      Feediron_Logger::get()->log_object(Feediron_Logger::LOG_TEST, "Extracted node", $entry->nodeValue);
 
       //render nested nodes to html
       $inner_html = $this->getInnerHtml($entry);

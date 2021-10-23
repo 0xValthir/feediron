@@ -5,7 +5,8 @@ class fi_mod_tags
   public function perform_filter($content, $config, $settings )
   {
     foreach ( $config as $key=>$mod ) {
-      Feediron_Logger::get()->log_object(Feediron_Logger::LOG_TTRSS, "Config line: ", $key);
+      Feediron_Logger::get()->log_object(Feediron_Logger::LOG_VERBOSE, "Config key: ", $key);
+      Feediron_Logger::get()->log_object(Feediron_Logger::LOG_VERBOSE, "Config value: ", $mod);
 
       switch ( $key ) {
         case 'xpath': $tags = ( new fi_mod_xpath() )->perform_filter( $content, $mod, $settings ); break;
@@ -40,7 +41,7 @@ class fi_mod_tags
       }
       // Strip tags of html and ensure plain text
       $tags[$key] = trim( preg_replace('/\s+/', ' ', strip_tags( $tag ) ) );
-      Feediron_Logger::get()->log(Feediron_Logger::LOG_TTRSS, "Tag saved: ".$tags[$key]);
+      Feediron_Logger::get()->log(Feediron_Logger::LOG_VERBOSE, "Tag saved: ".$tags[$key]);
     }
 
     $content['tags'] = array_filter($tags);

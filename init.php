@@ -80,7 +80,7 @@ class Feediron extends Plugin implements IHandler
     $content['link'] = $article["link"];
     if ($content['link'] === null) {  return $article; };
     $config = $this->getConfig($content['link']);
-    Feediron_Logger::get()->log(Feediron_Logger::LOG_TTRSS, "Production config: ", $config);
+    Feediron_Logger::get()->log(Feediron_Logger::LOG_TEST, "Production config: ", $config);
     if ($config !== false) {
       $content['content'] = $this->getArticle($article['link'], $config);
       if ( is_null( $content['content'] ) ) { return $article; };
@@ -88,21 +88,21 @@ class Feediron extends Plugin implements IHandler
 
       // If xpath tags are to replaced tags completely
       if( !empty( $content['tags'] ) AND !empty( $content['replace-tags'] ) ) {
-        Feediron_Logger::get()->log(Feediron_Logger::LOG_TTRSS, "Replacing Tags");
+        Feediron_Logger::get()->log(Feediron_Logger::LOG_TEST, "Replacing Tags");
         // Overwrite Article tags, Also ensure no empty tags are returned
         $article['tags'] = array_filter( $content['tags'] );
         // If xpath tags are to be prepended to existing tags
       } elseif ( !empty( $content['tags'] ) ) {
         // Merge with in front of Article tags to avoid empty array issues
         $taglist = array_merge($content['tags'], $article['tags']);
-        Feediron_Logger::get()->log(Feediron_Logger::LOG_TTRSS, "Merging Tags: ".implode( ", ", $taglist));
+        Feediron_Logger::get()->log(Feediron_Logger::LOG_TEST, "Merging Tags: ".implode( ", ", $taglist));
         // Ensure no empty tags are returned
         $article['tags'] = array_filter( $taglist );
       }
       $article['content'] = $content['content'];
     }
 
-    Feediron_Logger::get()->log_object(Feediron_Logger::LOG_TTRSS, "Article tags: ", $article['tags']);
+    Feediron_Logger::get()->log_object(Feediron_Logger::LOG_TEST, "Article tags: ", $article['tags']);
     return $article;
   }
 
@@ -154,7 +154,7 @@ class Feediron extends Plugin implements IHandler
     }
 
     global $fetch_last_content_type;
-    Feediron_Logger::get()->log(Feediron_Logger::LOG_TTRSS, $link);
+    Feediron_Logger::get()->log(Feediron_Logger::LOG_TEST, $link);
     $html = fetch_file_contents($link);
     $content_type = $fetch_last_content_type;
 
@@ -188,12 +188,12 @@ class Feediron extends Plugin implements IHandler
         preg_match('/charset=(\S+)/', $content_type, $matches);
         if (isset($matches[1]) && !empty($matches[1])) {
           $this->charset = str_replace('"', "", html_entity_decode($matches[1]));
-          Feediron_Logger::get()->log(Feediron_Logger::LOG_TEST, "Matched charset:", $this->charset);
+          Feediron_Logger::get()->log(Feediron_Logger::LOG_VERBOSE, "Matched charset:", $this->charset);
         } else {
           // Attempt to detect encoding of html directly
           $detected_charset = mb_detect_encoding($html, implode(',', mb_list_encodings()), true);
           if (is_string($detected_charset)) {
-            Feediron_Logger::get()->log(Feediron_Logger::LOG_TEST, "Detected charset:", $detected_charset);
+            Feediron_Logger::get()->log(Feediron_Logger::LOG_VERBOSE, "Detected charset:", $detected_charset);
             $this->charset = $detected_charset;
           } else {
             Feediron_Logger::get()->log(Feediron_Logger::LOG_TTRSS, "Failed to detect charset. Consider manually setting the chareset");
@@ -219,7 +219,7 @@ class Feediron extends Plugin implements IHandler
 
           if ($value == $this->charset) {
             $this->charset = $index;
-            Feediron_Logger::get()->log(Feediron_Logger::LOG_TEST, "Valid Charset detected and mapped", $this->charset);
+            Feediron_Logger::get()->log(Feediron_Logger::LOG_VERBOSE, "Valid Charset detected and mapped", $this->charset);
             break 2;
           }
         }
@@ -265,7 +265,6 @@ class Feediron extends Plugin implements IHandler
     $settings = array( "charset" => $this->charset, "link" => $link );
 
     foreach ( $config as $key=>$mod ) {
-      Feediron_Logger::get()->log_object(Feediron_Logger::LOG_TTRSS, "Config value: ", $mod);
       $class = 'fi_mod_' . $key;
 
       if (class_exists($class)) {
@@ -473,7 +472,6 @@ class Feediron extends Plugin implements IHandler
     }else{
       $config = $this->getConfig($test_url);
     }
-    Feediron_Logger::get()->log_object(Feediron_Logger::LOG_TTRSS, "Using config", $config);
     //$test_url = $this->reformatUrl($test_url, $config);
     //Feediron_Logger::get()->log(Feediron_Logger::LOG_TTRSS, "Url after reformat: $test_url");
     header('Content-Type: application/json');
