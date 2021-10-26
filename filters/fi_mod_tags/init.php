@@ -36,7 +36,7 @@ class fi_mod_tags
     // Loop through tags indivdually
     foreach( $tags as $key=>$tag )
     {
-      Feediron_Logger::get()->log(Feediron_Logger::LOG_VERBOSE, "Processing Tag: ", $tags[$key]);
+      Feediron_Logger::get()->log(Feediron_Logger::LOG_VERBOSE, "Processing Tag: ", $tag);
       // If set perform modify
       if($this->array_check($config, 'modify'))
       {
