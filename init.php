@@ -99,7 +99,7 @@ class Feediron extends Plugin implements IHandler
         // Ensure no empty tags are returned
         $article['tags'] = array_filter( $taglist );
       }
-      if ! ( is_null($content['content']) ) { $article['content'] = $content['content']; }
+      if ( isset($content['content']) ) { $article['content'] = $content['content']; }
     }
 
     Feediron_Logger::get()->log_object(Feediron_Logger::LOG_TEST, "Article tags: ", $article['tags']);
