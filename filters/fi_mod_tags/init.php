@@ -44,7 +44,6 @@ class fi_mod_tags
       }
       // Strip tags of html and ensure plain text
       $tags[$key] = trim( preg_replace('/\s+/', ' ', strip_tags( $tag ) ) );
-      Feediron_Logger::get()->log(Feediron_Logger::LOG_VERBOSE, "Tag saved: ".$tags[$key]);
     }
 
     $content['tags'] = array_filter($tags);
