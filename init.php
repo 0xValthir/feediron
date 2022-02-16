@@ -50,28 +50,28 @@ class Feediron extends Plugin implements IHandler
     $host->add_hook($host::HOOK_ARTICLE_FILTER, $this);
   }
 
-  // Required API, Django...
-  // function csrf_ignore($method): bool
-  // {
-  //   $csrf_ignored = array("index", "edit");
-  //   return array_search($method, $csrf_ignored) !== false;
-  // }
-  //
-  // // Allow only in active sessions
-  // function before($method): bool
-  // {
-  //   if ($_SESSION["uid"])
-  //   {
-  //     return true;
-  //   }
-  //   return false;
-  // }
-  //
-  // // Required API
-  // function after(): bool
-  // {
-  //   return true;
-  // }
+  Required API, Django...
+  function csrf_ignore($method): bool
+  {
+    $csrf_ignored = array("index", "edit");
+    return array_search($method, $csrf_ignored) !== false;
+  }
+
+  // Allow only in active sessions
+  function before($method): bool
+  {
+    if ($_SESSION["uid"])
+    {
+      return true;
+    }
+    return false;
+  }
+
+  // Required API
+  function after(): bool
+  {
+    return true;
+  }
 
   // The hook to filter the article. Called for each article
   function hook_article_filter($article)
