@@ -16,7 +16,7 @@ spl_autoload_register(function ($class) {
         include $file;
 });
 
-class Feediron extends Plugin
+class Feediron extends Plugin implements IHandler
 {
   private $host;
   protected $charset;
