@@ -16,7 +16,7 @@ spl_autoload_register(function ($class) {
         include $file;
 });
 
-class Feediron extends Plugin implements IHandler
+class Feediron extends Plugin
 {
   private $host;
   protected $charset;
@@ -51,27 +51,27 @@ class Feediron extends Plugin implements IHandler
   }
 
   // Required API, Django...
-  function csrf_ignore($method)
-  {
-    $csrf_ignored = array("index", "edit");
-    return array_search($method, $csrf_ignored) !== false;
-  }
-
-  // Allow only in active sessions
-  function before($method)
-  {
-    if ($_SESSION["uid"])
-    {
-      return true;
-    }
-    return false;
-  }
-
-  // Required API
-  function after()
-  {
-    return true;
-  }
+  // function csrf_ignore($method): bool
+  // {
+  //   $csrf_ignored = array("index", "edit");
+  //   return array_search($method, $csrf_ignored) !== false;
+  // }
+  //
+  // // Allow only in active sessions
+  // function before($method): bool
+  // {
+  //   if ($_SESSION["uid"])
+  //   {
+  //     return true;
+  //   }
+  //   return false;
+  // }
+  //
+  // // Required API
+  // function after(): bool
+  // {
+  //   return true;
+  // }
 
   // The hook to filter the article. Called for each article
   function hook_article_filter($article)
