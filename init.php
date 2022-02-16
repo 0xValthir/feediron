@@ -50,7 +50,7 @@ class Feediron extends Plugin implements IHandler
     $host->add_hook($host::HOOK_ARTICLE_FILTER, $this);
   }
 
-  Required API, Django...
+  // Required API, Django...
   function csrf_ignore($method): bool
   {
     $csrf_ignored = array("index", "edit");
